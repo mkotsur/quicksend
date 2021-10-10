@@ -9,7 +9,6 @@ import cats.data.Kleisli
 import cats.effect.{Blocker, Concurrent, ContextShift, Resource, Sync}
 import cats.implicits._
 import com.minosiants.pencil.Client
-import com.minosiants.pencil.data._
 import com.minosiants.pencil.protocol.Replies
 import fs2.io.tcp.SocketGroup
 import fs2.io.tls.TLSContext
@@ -39,8 +38,13 @@ object Quicksend {
   }
 
   def apply[F[_]: ContextShift: Logger: Sync: Concurrent: Parallel]()
-      : Kleisli[F, Deps[F], Quicksend[F]] =
-    Kleisli(new Quicksend[F](_).pure[F])
+      : Kleisli[F, QuicksendConf, Quicksend[F]] =
+    Kleisli { conf => new Quicksend[F](Deps(conf, Deps.clientR[F](conf))).pure[F] }
+
+  def apply[F[_]: ContextShift: Logger: Sync: Concurrent: Parallel](
+      conf: QuicksendConf
+  ): Quicksend[F] =
+    new Quicksend[F](Deps(conf, Deps.clientR[F](conf))).pure[F]
 }
 
 class Quicksend[F[_]: ContextShift: Logger: Sync: Concurrent: Parallel](deps: Deps[F]) {
@@ -51,18 +55,8 @@ class Quicksend[F[_]: ContextShift: Logger: Sync: Concurrent: Parallel](deps: De
   def send(template: Sealed[F]): F[Replies] =
     deps.clientR.use { client =>
       for {
-        rdxEmail <- template.run(deps.conf)
-        from <- Sync[F].fromOption(deps.conf.from, new RuntimeException("From is not defined"))
-        res <- client.send(
-          Email
-            .mime(
-              From(from),
-              rdxEmail.to,
-              rdxEmail.subject,
-              rdxEmail.body
-            )
-            .copy(attachments = rdxEmail.attachments)
-        )
+        email <- template.run(deps.conf)
+        res <- client.send(email)
       } yield res
     }
 }

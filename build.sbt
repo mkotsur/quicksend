@@ -1,6 +1,6 @@
 name := "quicksend"
 
-version := "0.1"
+version := "0.1.1-SNAPSHOT"
 
 scalaVersion := "2.13.6"
 
@@ -12,6 +12,10 @@ scalacOptions ++= Seq(
   "-unchecked",
   "-language:postfixOps"
 )
+
+githubTokenSource := TokenSource.Environment("GITHUB_TOKEN")
+githubOwner := "mkotsur"
+githubRepository := "quicksend"
 
 lazy val backend = (project in file("."))
   .settings(

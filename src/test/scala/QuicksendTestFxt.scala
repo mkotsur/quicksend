@@ -1,6 +1,6 @@
 package io.github.mkotsur.quicksend
 
-import Template.{RdxEmail, Template}
+import Template.Template
 import conf.QuicksendConf
 import utils.Fixtures
 
@@ -28,15 +28,18 @@ trait QuicksendTestFxt {
   case class TestTemplateVars[F[_]](to: String)
   private val emailTemplate =
     Template[IO, TestTemplateVars] {
-      case (_, TestTemplateVars(to)) =>
-        RdxEmail(
-          To(Mailbox.unsafeFromString(to)),
-          Subject(s"Test subject"),
-          Body.Ascii("Hello World!")
-        ).pure[IO]
+      case (conf, TestTemplateVars(to)) =>
+        Email
+          .text(
+            from = From(conf.from),
+            to = To(Mailbox.unsafeFromString(to)),
+            subject = Subject(s"Test subject"),
+            body = Body.Ascii("Hello World!")
+          )
+          .pure[IO]
     }
 
-  private val defaultConf = QuicksendConf(from = Mailbox.unsafeFromString("my@startup.com").some)
+  private val defaultConf = QuicksendConf(from = Mailbox.unsafeFromString("my@startup.com"))
   private val successReplies = Replies(Reply(Code.`220`, "", ""))
 
   val fixtures: Fixtures[IO, Flow, Fxt] =

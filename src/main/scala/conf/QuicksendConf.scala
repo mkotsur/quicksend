@@ -2,7 +2,7 @@ package io.github.mkotsur.quicksend
 package conf
 
 import cats.effect.{Blocker, ContextShift, Sync}
-import com.minosiants.pencil.data.{Credentials, Mailbox}
+import com.minosiants.pencil.data.{Credentials, From, Mailbox}
 import pureconfig.ConfigSource
 import pureconfig.generic.auto._
 import pureconfig.module.catseffect2.syntax.CatsEffectConfigSource
@@ -24,5 +24,5 @@ case class QuicksendConf(
     credentials: Option[Credentials] = None,
     readTimeout: FiniteDuration = 5.minutes,
     writeTimeout: FiniteDuration = 5.minutes,
-    from: Option[Mailbox] = None
+    from: Mailbox
 )
