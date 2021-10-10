@@ -1,6 +1,11 @@
-#Qucksend
+# Quicksend
 
-Functional email templates for Cats Effect programs. 
+Functional email templates for Cats Effect programs.
+
+## Supported for
+
+* Scala 2.13
+* Cats-effect 2.x
 
 ## Define, resolve, send
 Anywhere in your code, independent, pure.
@@ -42,7 +47,10 @@ val replies: IO[Replies] = Quicksend[IO](conf).send(happyBirthdayEml)
 
 ## About Quicksend
 
-Quicksend came out of my desire to avoid boilerplate when sending emails from backend services. Unlike other email libraries, it adds the notion of template and variables that can be leveraged to effortlessly and cleanly add the email sending into any pure functional program. 
+Quicksend came out of my desire to avoid boilerplate when sending emails from backend services. Unlike other email libraries, it adds the notion of template and variables that can be leveraged to effortlessly and cleanly add the email sending into any pure functional program.
+
+It's built on top of [Pencil](https://github.com/minosiants/pencil) library and has dependencies on [Cats Effect](https://typelevel.org/cats-effect/docs/2.x/getting-started) and [PureConfig](https://github.com/pureconfig/pureconfig). In the future, I want to remove most of the dependencies from the core of quicksend and offer them as separate modules.
+
 
 ## Do we still need emails?
 
