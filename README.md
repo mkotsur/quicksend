@@ -1,5 +1,8 @@
 # Quicksend
 
+![example workflow](https://github.com/mkotsur/quicksend/actions/workflows/scala.yml/badge.svg)
+
+
 Functional email templates for Cats Effect programs.
 
 ## Supported for

@@ -44,7 +44,7 @@ object Quicksend {
   def apply[F[_]: ContextShift: Logger: Sync: Concurrent: Parallel](
       conf: QuicksendConf
   ): Quicksend[F] =
-    new Quicksend[F](Deps(conf, Deps.clientR[F](conf))).pure[F]
+    new Quicksend[F](Deps(conf, Deps.clientR[F](conf)))
 }
 
 class Quicksend[F[_]: ContextShift: Logger: Sync: Concurrent: Parallel](deps: Deps[F]) {
